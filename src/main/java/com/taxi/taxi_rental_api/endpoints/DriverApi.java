@@ -9,11 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "drivers", description = "Управление водителями")
 @ApiResponses({
@@ -27,7 +28,7 @@ public interface DriverApi {
     @Operation(summary = "Показать всех водителей")
     @ApiResponse(responseCode = "200", description = "Список водителей")
     @GetMapping("/api/drivers")
-    List<DriverResponse> getAllDrivers();
+    CollectionModel<EntityModel<DriverResponse>> getAllDrivers();
 
     @Operation(summary = "Показать водителя по ID")
     @ApiResponses({
@@ -36,13 +37,12 @@ public interface DriverApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @GetMapping("/api/drivers/{id}")
-    DriverResponse getDriverById(@Parameter(description = "ID водителя") @PathVariable Long id);
+    EntityModel<DriverResponse> getDriverById(@Parameter(description = "ID водителя") @PathVariable Long id);
 
     @Operation(summary = "Создать нового водителя")
     @ApiResponse(responseCode = "201", description = "Водитель успешно создан")
     @PostMapping(value = "/api/drivers", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    DriverResponse createDriver(@Valid @RequestBody DriverRequest request);
+    ResponseEntity<EntityModel<DriverResponse>> createDriver(@Valid @RequestBody DriverRequest request);
 
     @Operation(summary = "Обновить водителя по ID")
     @ApiResponses({
@@ -53,7 +53,7 @@ public interface DriverApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @PutMapping(value = "/api/drivers/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    DriverResponse updateDriver(
+    ResponseEntity<EntityModel<DriverResponse>> updateDriver(
             @Parameter(description = "ID водителя") @PathVariable Long id,
             @Valid @RequestBody DriverRequest request
     );

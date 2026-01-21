@@ -9,11 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "cars", description = "API для работы с автомобилями")
 @ApiResponses({
@@ -27,7 +28,7 @@ public interface CarApi {
     @Operation(summary = "Показать все автомобили")
     @ApiResponse(responseCode = "200", description = "Список автомобилей")
     @GetMapping("/api/cars")
-    List<CarResponse> getAllCars();
+    CollectionModel<EntityModel<CarResponse>> getAllCars();
 
     @Operation(summary = "Показать автомобиль по ID")
     @ApiResponses({
@@ -36,13 +37,12 @@ public interface CarApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @GetMapping("/api/cars/{id}")
-    CarResponse getCarById(@Parameter(description = "ID автомобиля") @PathVariable Long id);
+    EntityModel<CarResponse> getCarById(@Parameter(description = "ID автомобиля") @PathVariable Long id);
 
     @Operation(summary = "Создать новый автомобиль")
     @ApiResponse(responseCode = "201", description = "Автомобиль успешно создан")
     @PostMapping(value = "/api/cars", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    CarResponse createCar(@Valid @RequestBody CarRequest request);
+    ResponseEntity<EntityModel<CarResponse>> createCar(@Valid @RequestBody CarRequest request);
 
     @Operation(summary = "Обновить автомобиль по ID")
     @ApiResponses({
@@ -53,7 +53,7 @@ public interface CarApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @PutMapping(value = "/api/cars/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    CarResponse updateCar(
+    ResponseEntity<EntityModel<CarResponse>> updateCar(
             @Parameter(description = "ID автомобиля") @PathVariable Long id,
             @Valid @RequestBody CarRequest request
     );

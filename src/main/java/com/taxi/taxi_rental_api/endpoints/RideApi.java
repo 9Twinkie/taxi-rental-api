@@ -9,11 +9,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "rides", description = "Управление поездками")
 @ApiResponses({
@@ -27,7 +28,7 @@ public interface RideApi {
     @Operation(summary = "Показать все поездки")
     @ApiResponse(responseCode = "200", description = "Список поездок")
     @GetMapping("/api/rides")
-    List<RideResponse> getAllRides();
+    CollectionModel<EntityModel<RideResponse>> getAllRides();
 
     @Operation(summary = "Показать поездку по ID")
     @ApiResponses({
@@ -36,13 +37,12 @@ public interface RideApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @GetMapping("/api/rides/{id}")
-    RideResponse getRideById(@Parameter(description = "ID поездки") @PathVariable Long id);
+    EntityModel<RideResponse> getRideById(@Parameter(description = "ID поездки") @PathVariable Long id);
 
     @Operation(summary = "Создать новую поездку")
     @ApiResponse(responseCode = "201", description = "Поездка успешно создана")
     @PostMapping(value = "/api/rides", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    RideResponse createRide(@Valid @RequestBody RideRequest request);
+    ResponseEntity<EntityModel<RideResponse>> createRide(@Valid @RequestBody RideRequest request);
 
     @Operation(summary = "Обновить поездку по ID")
     @ApiResponses({
@@ -53,7 +53,7 @@ public interface RideApi {
                     content = @Content(schema = @Schema(implementation = StatusResponse.class)))
     })
     @PutMapping(value = "/api/rides/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    RideResponse updateRide(
+    ResponseEntity<EntityModel<RideResponse>> updateRide(
             @Parameter(description = "ID поездки") @PathVariable Long id,
             @Valid @RequestBody RideRequest request
     );

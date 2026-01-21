@@ -19,22 +19,41 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- 🔴 ВАЖНОЕ ДОБАВЛЕНИЕ -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.5.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- Только аннотации валидации -->
+        <!-- Аннотации валидации -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.1.1</version>
         </dependency>
 
-        <!-- Только аннотации Spring Web (@GetMapping и т.д.) -->
+        <!-- HATEOAS -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+
+        <!-- Аннотации Spring Web -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>6.2.11</version>
         </dependency>
 
-        <!-- Только OpenAPI аннотации (без UI и сервера) -->
+        <!-- OpenAPI аннотации -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
@@ -44,7 +63,6 @@
 
     <build>
         <plugins>
-            <!-- Явное указание компилятора -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -57,7 +75,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Отключаем Spring Boot executable JAR (это библиотека!) -->
+            <!-- Можно оставить, не мешает -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
